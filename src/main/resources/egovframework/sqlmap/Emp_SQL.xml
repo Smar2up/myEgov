@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="EmpSpace">
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="empVO" type="main.service.EmpVO"/>
+	
+	<insert id="empDAO.insertEmp">
+		INSERT INTO	emp(empno
+						, name
+						, dname
+						, position
+						, status
+						, startdate
+						, gender
+						, phone
+						, email
+						, specialnote)
+				VALUES(	'YD'||LPAD(empno_seq.nextval,4,'0')
+						, '$name$'
+						, '$dname$'
+						, '$position$'
+						, 'work'
+						, '$startdate$'
+						, '$gender$'
+						, '$phone$'
+						, '$email$'
+						, '$specialnote$' )
+	</insert>
+	
+	<select id="empDAO.selectEmp" resultClass="EgovMap">
+		SELECT * 
+		FROM emp
+		WHERE delyn='N'
+			<isNotNull property="status" prepend="AND">
+				<isNotEmpty property="status">
+					status = '$status$'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="name" prepend="AND">
+				<isNotEmpty property="name">
+					name like '%'||'$name$'||'%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="dname" prepend="AND">
+				<isNotEmpty property="dname">
+					dname like '%'||'$dname$'||'%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="from" prepend="AND">
+			<isNotEmpty property="from">			
+				<isNotNull property="to">
+				<isNotEmpty property="to">			
+					(startdate BETWEEN '$from$' AND '$to$')
+				</isNotEmpty>
+				</isNotNull>
+			</isNotEmpty>
+			</isNotNull>
+	</select>
+</sqlMap>
